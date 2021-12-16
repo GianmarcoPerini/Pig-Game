@@ -8,33 +8,56 @@ const score2 = document.querySelector("#score--1");
 const current1 = document.querySelector("#current--0");
 const current2 = document.querySelector("#current--1");
 const dice = document.querySelector("#dice");
-let active = true;
-let partialScore1 = 0;
-let partialScore2 = 0;
-let completescore1 = 0;
-let completescore2 = 0;
+
+let active = true; // player1 = true || player2 = false
+let partialScore = 0;
+let completeScore1 = 0;
+let completeScore2 = 0;
+let total1 = 0;
+let total2 = 0;
 
 roll.addEventListener("click", () => {
+  // roll & display the roll
   let diceRand = getRandom(1, 6);
-
   dice.src = `dice-${diceRand}.png`;
-
-  if (active) {
-    current2.innerHTML = 0;
-    partialScore1 += diceRand;
-    current1.innerHTML = partialScore1;
-    completescore1 += partialScore1;
-    score1.innerHTML = completescore1;
-    partialScore1 = 0;
-    reset1(diceRand);
+  //check if is 1
+  if (diceRand != 1) {
+    partialScore += diceRand;
   } else {
-    current1.innerHTML = 0;
-    partialScore2 += diceRand;
-    current2.innerHTML = partialScore2;
-    completescore2 += partialScore2;
-    score2.innerHTML = completescore2;
-    partialScore2 = 0;
-    reset2(diceRand);
+    active = !active;
+    partialScore = 0;
+  }
+  changeActive();
+});
+
+hold.addEventListener("click", () => {
+  if (active) {
+    completeScore1 += partialScore;
+    total1 = completeScore1;
+    score1.innerHTML = completeScore1;
+    partialScore = 0;
+  } else {
+    completeScore2 += partialScore;
+    total2 = completeScore2;
+    score2.innerHTML = completeScore2;
+    partialScore = 0;
+  }
+  active = !active;
+  changeActive();
+  if (total2 >= 10) {
+    roll.disabled = true;
+    hold.disabled = true;
+    score2.innerHTML = "🎉";
+    score1.innerHTML = "💥";
+    player2.classList.add("player--active");
+    player1.classList.remove("player--active");
+  } else if (total1 >= 10) {
+    roll.disabled = true;
+    hold.disabled = true;
+    score1.innerHTML = "🎉";
+    score2.innerHTML = "💥";
+    player1.classList.add("player--active");
+    player2.classList.remove("player--active");
   }
 });
 
@@ -49,33 +72,14 @@ function reload() {
   location.reload();
 }
 
-function holdResult() {
-  active = !active;
-  //   console.log(active);
-}
-
-hold.addEventListener("click", () => {
-  holdResult();
+function changeActive() {
   if (active) {
+    current1.innerHTML = partialScore;
     player1.classList.add("player--active");
     player2.classList.remove("player--active");
   } else {
+    current2.innerHTML = partialScore;
     player2.classList.add("player--active");
     player1.classList.remove("player--active");
-  }
-});
-
-function reset1(dice) {
-  if (dice == 1) {
-    holdResult();
-    player2.classList.add("player--active");
-    player1.classList.remove("player--active");
-  }
-}
-function reset2(dice) {
-  if (dice == 1) {
-    holdResult();
-    player1.classList.add("player--active");
-    player2.classList.remove("player--active");
   }
 }
