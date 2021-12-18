@@ -38,7 +38,7 @@ hold.addEventListener("click", () => {
   completeScore[active] += partialScore;
   document.querySelector(`#score--${active}`).innerHTML = completeScore[active];
   // if we have a winner
-  if (completeScore[active] >= 10) {
+  if (completeScore[active] >= 100) {
     setWinner();
     setButton(true);
     dice.classList.add("hidden");
